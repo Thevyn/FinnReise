@@ -1,0 +1,245 @@
+﻿@model Model.Strekning
+@*
+    Viewet for å vise avganger
+*@
+@{
+
+    List<string> passasjerer = new List<string>();
+    var antallVoksen = Model.AntallVoksen;
+    var antallBarn = Model.AntallBarn;
+    var antallStudent = Model.AntallStudent;
+    var antallUngdom = Model.AntallUngdom;
+    var totalAntall = antallVoksen + antallUngdom + antallStudent + antallBarn;
+    var fraStasjon = Model.FraStasjon;
+    var tilStasjon = Model.TilStasjon;
+    
+    passasjerer.Add(antallVoksen == 1 ? antallVoksen + " Voksen" : null);
+    passasjerer.Add(antallVoksen > 1 ? antallVoksen + " Voksne" : null);
+    passasjerer.Add(antallStudent == 1 ? antallStudent + " Student" : null);
+    passasjerer.Add(antallStudent > 1 ? antallStudent + " Studenter" : null);
+    passasjerer.Add(antallUngdom == 1 ? antallUngdom + " Ungdom" : null);
+    passasjerer.Add(antallUngdom > 1 ? antallUngdom + " Ungdommer" : null);
+    passasjerer.Add(antallBarn >= 1 ? antallBarn + " Barn" : null);
+    
+    var divAntall = string.Join(", ", passasjerer.ToArray().Where(s => !string.IsNullOrEmpty(s)));
+    var enPassasjer = "Når ønsker du å reise fra " + fraStasjon + " til " + tilStasjon;
+    var flerePassasjerer = "Når ønsker dere å reise fra " + fraStasjon + " til " + tilStasjon;
+    var enPassasjerRetur = "Når ønsker du å reise fra " + tilStasjon + " til " + fraStasjon;
+    var flerePassasjererRetur = "Når ønsker dere å reise fra " + tilStasjon + " til " + fraStasjon;
+}
+
+
+<div class="container" id="visBetal">
+    <div>
+        @divAntall
+    </div>
+
+    <h3 class="avganger-header">@(totalAntall == 1 ? @enPassasjer : @flerePassasjerer)</h3>
+    <p>@(Model.BillettType == "TurRetur" ? "Du får retur-valg etter å ha valgt utreisebillett" : "")</p>
+    <h5>@Model.Dato.ToString("dddd dd MMMM", @System.Globalization.CultureInfo.GetCultureInfo("no-NB")), fra @Model.Tid.ToString("HH:mm")</h5>
+    <div class="table-wrapper">
+        <table id="EnVei" class="table table-hover">
+            <thead>
+            <tr>
+                <th>Avgangstid</th>
+                <th>Spor</th>
+                <th>Linje</th>
+                <th>Pris</th>
+            </tr>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+
+    @if (Model.BillettType == "TurRetur")
+    {
+        <div id="Retur" style="display:none">
+            <h3 class="avganger-header">@(totalAntall == 1 ? @enPassasjerRetur : @flerePassasjererRetur)</h3>
+                    <h5>@Model.ReturDato.ToString("dddd dd MMMM", @System.Globalization.CultureInfo.GetCultureInfo("no-NB")), fra @Model.ReturTid.ToString("HH:mm")</h5>
+                    <div class="table-wrapper">
+                        <table id="TurRetur" class="table">
+                            <thead>
+                            <tr>
+                                <th>Avgangstid</th>
+                                <th>Spor</th>
+                                <th>Linje</th>
+                                <th>Pris</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+        </div>
+        
+    }
+    <h3 id="totalPris">Sum: 0,-</h3>
+    <div id="feilmelding" class="text-danger"></div>
+    <input type="button" value="Kjøp" class="btn btn-info" id="btnKjop" />
+</div>
+
+
+@section scripts {
+    <script>
+    // Hent utreise avanger
+     $(document).ready(function () {
+           $.ajax({
+            type: 'GET',
+            url: '@Url.Action("HentAvganger")',
+            data: { },
+            success: function (data) {
+                var rows;
+                         $.each(data, function (i, item) {
+                             
+                            rows += "<tr>"
+                                 + "<td>" + item.avgangstid + "</td>"
+                                 + "<td>" + item.spor + "</td>"
+                                 + "<td>" + item.linje + "</td>"
+                                 + "<th scope='row'> @Model.Pris </th>"
+                                 + "<td> <button class='btn btn-success' onclick=" + `velgUtreise(${item.aId})`+ ">Velg</button> </td></td>"
+               
+               
+                            + "</tr>";
+                                 
+                   });
+                   $('#EnVei tbody').append(rows);
+                },
+            error: function (emp) {
+                alert('error');
+            }
+        });
+        });
+     
+     //Hent alle retur avgangene
+   if($('#Retur').length > 0 ){
+       $(document).ready(function () {
+                      $.ajax({
+                       type: 'GET',
+                       url: '@Url.Action("HentAvgangerRetur")',
+                       data: { },
+                       dataType: 'json',
+                       contentType: "application/json; charset=utf-8",
+                       success: function (data) {
+                     var rows;
+                     $.each(data, function (i, item) {
+                        rows += "<tr>"
+                             + "<td>" + item.avgangstid + "</td>"
+                             + "<td>" + item.spor + "</td>"
+                             + "<td>" + item.linje + "</td>"
+                             + "<th scope='row'> @Model.Pris </th>"
+                             + "<td> <button class='btn btn-success' onclick=" + `velgRetur(${item.aId})`+ ">Velg</button> </td>"
+           
+           
+                        + "</tr>";
+                             
+               });
+               $('#TurRetur tbody').append(rows);
+            },
+                       error: function (emp) {
+                           alert('error');
+                       }
+                   });
+                   });
+             
+   }
+      // velg utreise avgang
+       function velgUtreise(id)
+       {     
+           if($('#Retur').length >0 ){
+             document.getElementById('Retur').style.display = "block";
+            }
+            $.ajax({
+            type: "GET",
+            url: '@Url.Action("VelgAvgang")',
+            data: "AId=" + id, 
+            success: function(data) {
+                  
+                 $('#EnVei tbody').html(data);
+                 document.getElementById('totalPris').innerHTML = "Sum: " + @Model.Pris + ",- NOK"
+            }
+          
+       
+          });
+      
+       }
+   // Velg retur avgang
+      
+    function velgRetur(id)
+          {     
+               $.ajax({
+               type: "GET",
+               url: '@Url.Action("VelgAvgang")',
+               data: "AId=" + id, 
+               success: function(data) {
+                     
+                    $('#TurRetur tbody').html(data);
+                    document.getElementById('totalPris').innerHTML = "Sum: " + 2 * @Model.Pris + ",- NOK"
+
+               }
+         
+             });       
+          }
+   
+    $("#btnKjop").click(function () {
+               //Itererer gjennom tabellen og legger det i et objekt. 
+                   var avganger = {};
+               $("#EnVei tbody tr").each(function () {
+                   var row = $(this);
+                   avganger.Avgangstid = row.find("TD").eq(0).html();
+                   avganger.Spor = row.find("TD").eq(1).html();
+                   avganger.Linje = row.find("TD").eq(2).html();
+               });
+               $("#TurRetur tbody tr").each(function () {
+                   var row = $(this);
+                   avganger.AvgangstidRetur = row.find("TD").eq(0).html();
+                   avganger.SporRetur = row.find("TD").eq(1).html();
+                   avganger.LinjeRetur = row.find("TD").eq(2).html();
+               });
+                var EnVeirad = $('#EnVei').find('tbody tr').length
+                var TurReturRad = $('#TurRetur').find('tbody tr').length;
+                var billettType = "@Model.BillettType";
+
+
+                 if(billettType === 'EnVei')
+                 {
+                     if (EnVeirad === 1) 
+                     {
+                       sendTabell(avganger);    
+                     }
+                     else 
+                     {
+                        document.getElementById("feilmelding").innerText = "Vennligst velg en avgang";
+                     }
+                 }  
+                else if(billettType === 'TurRetur')
+                    {
+                        if(EnVeirad === 1 && TurReturRad === 1) 
+                            {
+                                 sendTabell(avganger);
+                            }
+                        else 
+                        {
+                          document.getElementById("feilmelding").innerText = "Vennligst velg en avgang";
+                        }  
+            
+                    }         
+            });
+   
+  function sendTabell(avganger) {
+ //Sender objektet tilbake til controller. 
+        $.ajax({
+               type: "POST",
+               url: '@Url.Action("VisBetal", "Home")',
+               data: JSON.stringify(avganger),
+               contentType: "application/json; charset=utf-8",
+               dataType: "html",
+               success: function (data) {
+                       $('#visBetal').html(data);           
+                       $("#visBetal").each(function () { $.data($(this)[0], 'validator', false); }); //Slå på validering i partial view
+                       $.validator.unobtrusive.parse("#visBetal");
+               }
+        });   
+   }
+    </script>
+
+}

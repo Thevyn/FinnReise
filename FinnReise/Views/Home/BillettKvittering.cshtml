@@ -1,0 +1,32 @@
+﻿@using System.Security.Cryptography
+@model Model.Rute
+@* Dette viewet viser billetten din etter at kjøpet er fullført*@
+@{
+    ViewData["Title"] = "Din Billett";
+    var antallPassasjerer = Model.Strekning.AntallBarn + Model.Strekning.AntallStudent + Model.Strekning.AntallUngdom + Model.Strekning.AntallVoksen;
+}
+
+
+<div class="container">
+    <h1> Takk for at du reiser med oss</h1>
+    <h3>Her er billetten din:</h3>
+
+    <h4 class="font-weight-bold"> Utreise: </h4>
+    <h5>@Model.Strekning.FraStasjon - @Model.Strekning.TilStasjon, @Model.Avgang.Avgangstid</h5>
+    <h4 class="font-weight-bold"> Antall Passasjerer:</h4>
+    <h5> @antallPassasjerer</h5>
+    <h4 class="font-weight-bold">Dato: </h4>
+    <h5>@Model.Strekning.Dato.ToString("d")</h5>
+
+    @if (Model.Strekning.BillettType == "TurRetur")
+    {
+        <h4 class="font-weight-bold">Retur reise: </h4>
+        <h5>@Model.Strekning.TilStasjon - @Model.Strekning.FraStasjon, @Model.Avgang.AvgangstidRetur</h5>
+        <h4 class="font-weight-bold"> Antall Passasjerer:</h4>
+        <h5> @antallPassasjerer</h5>
+        <h4 class="font-weight-bold">Dato: </h4>
+        <h5>@Model.Strekning.ReturDato.ToString("d")</h5>
+    }
+
+
+</div>

@@ -1,0 +1,104 @@
+﻿@model Model.Kort
+
+@*
+    Viewet for å vise betalingsskjermen
+*@
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using (Html.BeginForm("VisKvittering", "Home", FormMethod.Post))
+{
+    <div class="w-100 ">
+        <div class="container form-group centered" id="form-container">
+            <a href="@Url.Action("Avganger")" class="btn btn-link">Tilbake </a>
+
+            <h2>Betaling</h2>
+
+            <div class="row">
+                <div class="col-sm-6 col-md-5">
+                    <label for="Kortnummer">Kortnummer(Kun VISA)</label>
+
+                    <div class="input-group input-group-lg">
+                        <input asp-for="Kortnummer" class="form-control" id="Kortnr" placeholder="Kortnummer"/>
+                    </div>
+                    <span asp-validation-for="Kortnummer" class="text-danger font-weight-bold"></span>
+                </div>
+
+                <div class="col-xs-1">
+                    <label for="CVC">CVC</label>
+                    <div class=" input-group-lg">
+                        <div class="input-group input-group-lg">
+                            <input asp-for="CVC" id="CVC" class="form-control" placeholder="CVC" maxlength="3"/>
+                        </div>
+                        <span asp-validation-for="CVC" class="text-danger font-weight-bold"></span>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-md-5">
+                    <label for="Fornavn">Navn</label>
+                    <div class="input-group input-group-lg">
+
+                        <input asp-for="Navn" class="form-control" id="Navn" placeholder="Navn"/>
+
+                    </div>
+                    <span asp-validation-for="Navn" class="text-danger font-weight-bold"></span>
+                </div>
+            </div>
+
+            <div class="input-group-lg">
+                <label class="mt-4">Gyldighet</label>
+                <div class="row">
+                    <div class="col-sm-6 col-md-5">
+
+                        <div class="input-group input-group-lg">
+                            <div class="col-xs-2">
+                                <p>Måned</p>
+
+                                <select class="form-control" asp-for="GyldighetsManed" id="utlopsManed">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                            </div>
+
+                            <span class="ml-3 mr-3 mt-5"> / </span>
+
+                            <div class="col-xs-2">
+                                <p>År</p>
+
+                                <select class="form-control" asp-for="GyldighetsAr" id="utlopsAr">
+                                    <option value="2019">2019</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*Kjøp knapp, button som poster og sender tilbake data til controller*@
+            <div class="row button-query">
+                <input type="submit" name="VisBillettKvittering" value="Betal" class="btn btn-info btn-lg ml-2 mt-2"/>
+            </div>
+        </div>
+    </div>
+}

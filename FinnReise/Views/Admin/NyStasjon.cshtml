@@ -1,0 +1,27 @@
+@model Model.Stasjon
+
+@{
+    ViewBag.Title = "Ny Avgang";
+}
+
+@using (Html.BeginForm("NyStasjon", "Admin", FormMethod.Post))
+{
+    <div class="container">
+        <a class="btn btn-outline-info" asp-action="AdminPanel" asp-controller="Admin">Tilbake</a>
+        <h2>Legg til ny stasjon</h2>
+        <label for="StasjonNavn">Stasjon</label>
+
+        <div class="input-group input-group-lg">
+            <input asp-for="StasjonNavn" class="form-control" id="StasjonNavn" placeholder="Stasjon"/>
+        </div>
+        <span asp-validation-for="StasjonNavn" class="text-danger font-weight-bold"></span>
+        <div>
+            <button class="btn btn-success mt-5">Legg til stasjon</button>
+        </div>
+
+
+        <span class="text-success">@ViewBag.OK</span>
+        <span class="text-danger">@ViewBag.Error</span>
+
+    </div>
+}

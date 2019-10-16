@@ -1,0 +1,45 @@
+﻿@*Kode for å velge dato og tid med bootstrap styling og JQuery kode som ligger under /wwwroot/js/site.js*@
+
+<div class="row">
+    @* Date and time-picker for en vei*@
+    <div class="col-md-3">
+        <label>Utreise</label>
+        <div class="input-group input-group-lg ">
+            <div class="input-group-prepend">
+                <i class="far fa-calendar fa-sm input-group-text"></i>
+            </div>
+            <input class="form-control" type="text" id="datepicker" name="Dato" readonly/>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <label>Tid</label>
+        <div class="input-group input-group-lg">
+            <div class="input-group-prepend">
+                <i class="far fa-clock fa-sm input-group-text"></i>
+            </div>
+            <input class="form-control datepicker" type="text" id="timepicker" name="Tid"/>
+        </div>
+    </div>
+
+
+    @*Date-time-picker for tur/retur*@
+    <div class="col-md-3 retur">
+        <label>Retur</label>
+        <div class="input-group input-group-lg">
+            <div class="input-group-prepend">
+                <i class="far fa-calendar fa-sm input-group-text"></i>
+            </div>
+            <input class="form-control" type="text" id="datepicker-tur" name="ReturDato" readonly/>
+        </div>
+    </div>
+    <div class="col-md-3 retur">
+        <label>Tid</label>
+        <div class="input-group input-group-lg ">
+            <div class="input-group-prepend">
+                <i class="far fa-clock fa-sm input-group-text"></i>
+            </div>
+            <input class="form-control " type="text" id="timepicker-tur" name="ReturTid"/>
+        </div>
+    </div>
+
+</div>

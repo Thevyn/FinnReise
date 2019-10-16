@@ -1,0 +1,64 @@
+﻿@model Model.Strekning
+
+
+@*Rader og kolonner i bootstrap grid system og styling for å vise billett typer og antall*@
+<label class="label-phone">Reisende</label>
+<div class="row">
+    <div class="col-md-3">
+        <div class="input-group input-group">
+            <div class="input-group-prepend">
+                <button class="btn btn-light rounded-circle" type="button" onclick="trekkFra('voksen')">-</button>
+            </div>
+            <input asp-for="AntallVoksen" id="AntallVoksen" class="voksen trekkfra transparent-input" type="text" maxlength="1" value="1">
+            <div class="input-group-prepend">
+                <button class="btn btn-info rounded-circle" id="btn-voksen" onclick="leggTil('voksen')" type="button">+</button>
+                <label class="input-group-text transparent-input">Voken</label>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-3 mob-iphonex">
+        <div class="input-group input-group">
+            <div class="input-group-prepend">
+                <button class="btn btn-light rounded-circle" type="button" onclick="trekkFra('barn')">-</button>
+            </div>
+            <input asp-for="AntallBarn" class="barn transparent-input" type="text" maxlength="1" value=0>
+            <div class="input-group-prepend">
+                <button class="btn btn-info rounded-circle" onclick="leggTil('barn')" type="button">+</button>
+                <label class="input-group-text transparent-input">Barn</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="input-group input-group">
+            <div class="input-group-prepend">
+                <button class="btn btn-light rounded-circle" type="button" onclick="trekkFra('student')">-</button>
+            </div>
+            <input asp-for="AntallStudent" class="student transparent-input" type="text" maxlength="1" name="AntallStudent" value=0>
+            <div class="input-group-prepend">
+                <button class="btn btn-info rounded-circle" type="button" onclick="leggTil('student')">+</button>
+                <label class="input-group-text transparent-input">Student</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mob-iphonex">
+        <div class="input-group input-group  ">
+            <div class="input-group-prepend">
+                <button class="btn btn-light rounded-circle" type="button" onclick="trekkFra('ungdom')">-</button>
+            </div>
+            <input asp-for="AntallUngdom" class="ungdom transparent-input" type="text" maxlength="1" value=0>
+            <div class="input-group-prepend">
+                <button class="btn btn-info rounded-circle" type="button" onclick="leggTil('ungdom')">+</button>
+                <label asp-for="AntallUngdom" class="input-group-text transparent-input">Ungdom</label>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="mt-1">
+    <span asp-validation-for="AntallVoksen" class="text-danger font-weight-bold"></span>
+
+</div>

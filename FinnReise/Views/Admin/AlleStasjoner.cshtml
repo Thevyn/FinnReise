@@ -1,0 +1,35 @@
+@model List<Model.Stasjon>
+
+
+<div class="container">
+    <h5 class="text-uppercase text-info">Trykk på stasjon for å se avganger</h5>
+
+    <table class="table">
+        <thead>
+        <td>
+            Stasjon
+        </td>
+        <td>
+            <a asp-controller="Admin" asp-action="NyStasjon" class="btn btn-outline-primary">Legg til stasjon</a>
+        </td>
+        </thead>
+
+        @foreach (var stasjon in Model)
+        {
+            <tr>
+                <td>
+                    <button class="btn btn-outline-success w-75" id="alleAvganger" value="@stasjon.SId">@stasjon.StasjonNavn</button>
+                </td>
+                <td>
+                    <a asp-controller="Admin" asp-action="EndreStasjon" class="btn btn-outline-info w-75" asp-route-SId="@stasjon.SId">Endre</a>
+                </td>
+                <td>
+                    <button class="btn btn-outline-danger w-100" id="slettStasjon" value="@stasjon.SId">Slett</button>
+                </td>
+            </tr>
+        }
+    </table>
+    @await Html.PartialAsync("SlettStasjon")
+
+
+</div>

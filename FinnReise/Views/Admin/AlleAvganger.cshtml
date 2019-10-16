@@ -1,0 +1,46 @@
+@model List<Model.Avgang>
+
+@{
+    var SId = TempData["SId"];
+}
+<div class="container">
+    <button class="btn btn-outline-info mb-1" id="tilbake">Tilbake</button>
+    <table class="table">
+        <thead>
+        <td>
+            Avgangstid
+        </td>
+        <td>
+            Spor
+        </td>
+        <td>
+            Linje
+        </td>
+        <td>
+            <a asp-controller="Admin" asp-action="NyAvgang" asp-route-SId="@SId" class="btn btn-outline-primary">Legg til avgang</a>
+        </td>
+        </thead>
+
+        @foreach (var avgang in Model)
+        {
+            <tr>
+                <td>
+                    @avgang.Avgangstid
+                </td>
+                <td>
+                    @avgang.Spor
+                </td>
+                <td>
+                    @avgang.Linje
+                </td>
+                <td>
+                    <a asp-controller="Admin" asp-action="EndreAvgang" class="btn btn-outline-info w-75" asp-route-AId="@avgang.AId">Endre</a>
+                </td>
+                <td>
+                    <button class="btn btn-outline-danger w-100" id="slettAvgang" value="@avgang.AId">Slett</button>
+                </td>
+            </tr>
+        }
+    </table>
+    @await Html.PartialAsync("SlettAvgang")
+</div>

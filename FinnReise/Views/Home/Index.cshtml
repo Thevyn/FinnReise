@@ -1,0 +1,161 @@
+﻿@model Model.Strekning
+@{
+    ViewData["Title"] = "Forside";
+}
+
+@using (Html.BeginForm("VisAvganger", "Home", FormMethod.Post))
+{
+    @*Div for backgrunnsbilde fra css*@
+    <div class="w-100 background-image ">
+        @*Bootstrap class, og centered for å legge all tekst etc. i center*@
+        <div class="container form-group centered" id="form-container">
+            <h2>Skriv inn ønsket destinasjon</h2>
+
+            @* Bootstrap grid med rader og colonner for å få ting til å se pent ut*@
+            <div class="row">
+                <div class="col-sm-6 col-md-5 stasjon">
+                    <label asp-for="FraStasjon">Reise fra</label>
+                    <div class="input-group input-group-lg">
+                        <div class="input-group-prepend">
+                            <i class="fas fa-train fa-sm input-group-text"></i>
+                        </div>
+                        <input asp-for="FraStasjon" class="form-control" id="FraStasjon" placeholder="Hvor vil du reise fra?"/>
+
+                    </div>
+                    <span asp-validation-for="FraStasjon" class="text-danger font-weight-bold"></span>
+
+                </div>
+
+
+                <div class="byttVerdi"><button class="byttVerdiKnapp" disabled="disabled">&#8646;</button></div>
+                <div class="col-sm-6 col-md-5 stasjon">
+                    <label for="TilStasjon">Reise til</label>
+                    <div class=" input-group-lg">
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend">
+                                <i class="fas fa-train fa-sm input-group-text"></i>
+                            </div>
+                            <input asp-for="TilStasjon" id="TilStasjon" class="form-control" placeholder="Hvor vil du reise til?"/>
+                        </div>
+                        <span asp-validation-for="TilStasjon" class="text-danger font-weight-bold"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            @*Radio knapper for å vise en vei eller tur-retur med bootstrap styling*@
+            <div class="row">
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input " name="BillettType" checked id="en-vei" value="EnVei"> En Vei
+                    </label>
+                </div>
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input" name="BillettType" id="tur-retur" value="TurRetur"> Tur/Retur
+                    </label>
+                </div>
+
+            </div>
+
+            @*Partial view for å dele opp koden i flere Views så koden blir mye mer leselig*@
+            @await Html.PartialAsync("~/Views/Home/DateTimePicker.cshtml")
+            @await Html.PartialAsync("~/Views/Home/BillettTyper.cshtml")
+
+
+
+            @*Vis avganger knapp, button som poster og sender tilbake data til controller*@
+            <div class="row float-right button-query">
+                <input type="submit" name="VisAvganger" value="Se avganger og priser" class="btn btn-info btn-lg mt-3 "/>
+            </div>
+        </div>
+    </div>
+
+    <div class="container kollektiv mt-5">
+        <h2 class="text-center">Det har aldri vært lettere å reise kollektivt</h2>
+        <div class="row">
+            <div class="row " id="test">
+                <div class="col-md-5 col-sm-5">
+                    <div class="fløien"></div>
+                    <h4 style="font-weight: bold">Opplev alt det vakre Bergen har å tilby</h4>
+                </div>
+                <div class="col-md-5 ml-auto">
+                    <div class="reis-sammen"></div>
+                    <h4 style="font-weight: bold">Reis med noen du bryr deg om</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+}
+
+
+
+@section scripts {
+
+    <script>
+    @* Funksjon for å trykke på +/- knappene for å oppdatere antall billetter*@
+function leggTil(billettType) {
+
+        const inputs = document.querySelectorAll("input." + billettType);
+        inputs.forEach(function (input) {
+            if (input.value < 9) {
+                input.value = Number(input.value) + 1
+            }
+            else if (input.value > 9) {
+                input.value = 9
+            }
+        })
+    }
+
+    function trekkFra(billettType) {
+        const inputs = document.querySelectorAll("input." + billettType);
+        inputs.forEach(function (input) {
+            if (input.value > 0) {
+                input.value = Number(input.value) - 1
+
+            }
+        })
+    }
+
+      @*En funksjon som bruker AJAX request til å hente data om ulike strekninger fra controlleren(databasen) vår ned til autocomplete viewet*@
+    $(function () {
+        var tags =  function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("HentStasjon")',
+                    data: { prefix: request.term },
+                    dataType: "json",
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return item;
+                        }));
+                       
+                    }
+                });
+            };
+
+         // Gir deg forslag når du begynner å skrive
+        $("#FraStasjon, #TilStasjon").autocomplete({
+            source: tags
+        }).autocomplete({ autoFocus: true,
+
+            response: function(event, ui) 
+            {  
+                if (!ui.content.length) 
+                {
+                var ingenTreff = { value:"",label:"Ingen treff" };
+                ui.content.push(ingenTreff);
+
+                }
+            }
+
+        });
+    });
+    </script>
+
+
+
+}

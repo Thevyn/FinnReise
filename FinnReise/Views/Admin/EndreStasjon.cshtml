@@ -1,0 +1,28 @@
+@model Model.Stasjon
+
+@{
+    ViewBag.Title = "title";
+}
+
+@using (Html.BeginForm("EndreStasjon", "Admin", FormMethod.Post))
+{
+    <div class="container">
+        <a class="btn btn-outline-info" asp-action="AdminPanel" asp-controller="Admin">Tilbake</a>
+        <h2>Endre Stasjon</h2>
+        <label for="StasjonNavn">Stasjon</label>
+
+        <div class="input-group input-group-lg">
+            <input asp-for="StasjonNavn" class="form-control" id="StasjonNavn" value="@Model.StasjonNavn"/>
+            <input type="hidden" asp-for="SId" value="@Model.SId"/>
+        </div>
+        <span asp-validation-for="StasjonNavn" class="text-danger font-weight-bold"></span>
+        <div>
+            <button class="btn btn-success mt-5">Endre</button>
+        </div>
+
+
+        <span class="text-success">@ViewBag.OK</span>
+        <span class="text-danger">@ViewBag.Error</span>
+
+    </div>
+}

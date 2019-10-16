@@ -1,0 +1,49 @@
+@model Model.Avgang
+
+
+
+@using (Html.BeginForm("EndreAvgang", "Admin", FormMethod.Post))
+{
+    <div class="container">
+        <a class="btn btn-outline-info" asp-action="AdminPanel" asp-controller="Admin">Tilbake</a>
+        <h2>Legg til avgang</h2>
+        <div class="row">
+            <div class="col-3">
+                <label for="Avgangstid">Avgangstid</label>
+                <div class="input-group input-group-lg">
+                    <input asp-for="Avgangstid" class="form-control" value="@Model.Avgangstid"/>
+                </div>
+                <span asp-validation-for="Avgangstid" class="text-danger font-weight-bold"></span>
+            </div>
+            <div class="col-3">
+                <label for="Spor">Spor</label>
+                <div class="input-group input-group-lg">
+                    <input asp-for="Spor" class="form-control" value="@Model.Spor"/>
+                </div>
+                <span asp-validation-for="Spor" class="text-danger font-weight-bold"></span>
+            </div>
+            <div class="col-3">
+                <label for="Linje">Linje</label>
+                <div class="input-group input-group-lg">
+                    <input asp-for="Linje" class="form-control" value="@Model.Linje"/>
+                </div>
+                <span asp-validation-for="Linje" class="text-danger font-weight-bold"></span>
+            </div>
+            <div>
+                <input type="hidden" asp-for="AId" value="@Model.AId"/>
+                <input type="hidden" asp-for="SId" value="@Model.SId"/>
+
+            </div>
+
+        </div>
+
+        <div>
+            <button class="btn btn-success mt-5">Endre</button>
+        </div>
+
+
+        <span class="text-success">@ViewBag.OK</span>
+        <span class="text-danger">@ViewBag.Error</span>
+
+    </div>
+}
